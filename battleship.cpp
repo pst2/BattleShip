@@ -14,19 +14,19 @@ struct Ship {
     bool horizontal;
 };
 
-void Taobang(vector<vector<char>>& board) {
+void TaoBang(vector<vector<char>>& board) {
     for (int i = 0; i < BOARD_SIZE; ++i) {
         vector<char> row(BOARD_SIZE, '~');
         board.push_back(row);
     }
 }
-bool Taobang(vector<vector<char>>& board) {
+bool TaoBang(vector<vector<char>>& board) {
     for (int i = 0; i < BOARD_SIZE; ++i) {
         vector<char> row(BOARD_SIZE, '~');
         board.push_back(row);
     }
 }
-bool isValidPlacement(const vector<vector<char>>& board, const Ship& ship) {
+bool ViTriHopLe(const vector<vector<char>>& board, const Ship& ship) {
     if (ship.horizontal) {
         if (ship.y + ship.length > BOARD_SIZE) {
             return false;
@@ -67,10 +67,11 @@ void placeShips(vector<Ship>& ships, vector<vector<char>>& board) {
         ship.length = rand() % 2 + 2; 
         ship.horizontal = rand() % 2 == 0;
 
+        
         do {
             ship.x = rand() % BOARD_SIZE;
             ship.y = rand() % BOARD_SIZE;
-        } while (!isValidPlacement(board, ship));
+        } while (!ViTriHopLe(board, ship));
 
         Dat_vi_tri_thuyen(board, ship);
         ships.push_back(ship);
@@ -92,7 +93,7 @@ bool isHit(const vector<Ship>& ships, int x, int y) {
     return false;
 }
 
-void inbang(const vector<vector<char>>& board) {
+void inBang(const vector<vector<char>>& board) {
     for (const auto& row : board) {
         for (const auto& cell : row) {
             cout << cell << " ";
@@ -105,7 +106,7 @@ int main() {
     vector<vector<char>> board;
     vector<Ship> ships;
 
-    Taobang(board);
+    TaoBang(board);
     placeShips(ships, board);
 
     int attempts = 0;
@@ -137,7 +138,7 @@ int main() {
             board[x][y] = 'O';
         }
 
-        inbang(board);
+        inBang(board);
     }
 
     cout << "Chúc mừng bạn đã chiến thắng!" << endl;
