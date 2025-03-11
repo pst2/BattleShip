@@ -7,6 +7,7 @@ using namespace std;
 
 const int BOARD_SIZE = 10;
 const int NUM_SHIPS = 3;
+const int TIME_LIMIT = 60;
 
 struct Ship {
     int x, y;
@@ -102,6 +103,11 @@ void inBang(const vector<vector<char>>& board) {
     }
 }
 
+bool DemThoiGian(high_resolution_clock::time_point start_time){
+    auto current_time = higgh_resolution_clock::now();
+    auto duration = duration_cast<seconds>(current_time - start_time).count()
+    return duration >= TIME_LIMIT;
+
 int main() {
     vector<vector<char>> board;
     vector<Ship> ships;
@@ -112,7 +118,10 @@ int main() {
     int attempts = 0;
     int hits = 0;
 
+    auto start_time = high_resolution_clock::now();
+
     while (hits < NUM_SHIPS) {
+        
         int x, y;
         cout << "Chọn tọa độ (x y): ";
         cin >> x >> y;
@@ -137,6 +146,11 @@ int main() {
             cout << "Trượt." << endl;
             board[x][y] = 'O';
         }
+
+         if (DemThoiGian(start_time)){
+            cout << "Hết thời gian! Bạn đã thua." << endl;
+            return 0;
+         }
 
         inBang(board);
     }
