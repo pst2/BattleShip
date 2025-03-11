@@ -7,7 +7,7 @@ using namespace std;
 
 const int BOARD_SIZE = 10;
 const int NUM_SHIPS = 3;
-const int TIME_LIMIT = 60;
+const int TIME_LIMIT = 60*5;
 
 struct Ship {
     int x, y;
