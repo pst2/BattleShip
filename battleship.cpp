@@ -5,6 +5,7 @@
 #include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 const int BOARD_SIZE = 10;
 const int NUM_SHIPS = 3;
