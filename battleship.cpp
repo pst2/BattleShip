@@ -2,12 +2,14 @@
 #include <vector>
 #include <ctime>
 #include <cstdlib>
+#include <chrono>
 
 using namespace std;
 
 const int BOARD_SIZE = 10;
 const int NUM_SHIPS = 3;
 const int TIME_LIMIT = 60*5;
+const int PLAY_LIMIT = 20;
 
 struct Ship {
     int x, y;
@@ -94,10 +96,14 @@ bool isHit(const vector<Ship>& ships, int x, int y) {
     return false;
 }
 
-void inBang(const vector<vector<char>>& board) {
+void inBang(const vector<vector<char>>& board, bool showShips = false) {
     for (const auto& row : board) {
         for (const auto& cell : row) {
-            cout << cell << " ";
+           if (cell == 'S' && !showShips) {
+                cout << "~ ";
+            } else {
+                cout << cell << " ";
+            }
         }
         cout << endl;
     }
@@ -107,6 +113,10 @@ bool DemThoiGian(high_resolution_clock::time_point start_time){
     auto current_time = higgh_resolution_clock::now();
     auto duration = duration_cast<seconds>(current_time - start_time).count()
     return duration >= TIME_LIMIT;
+
+bool GioiHanLuotChoi(int so_lan_thu) {
+    return so_lan_thu >= PLAY_LIMIT;
+}
 
 int main() {
     vector<vector<char>> board;
@@ -149,13 +159,20 @@ int main() {
 
          if (DemThoiGian(start_time)){
             cout << "Hết thời gian! Bạn đã thua." << endl;
+             intbang(board, true);
             return 0;
          }
 
+        if (GioiHanLuotChoi(attempts)) {
+            cout << "Hết lượt chơi! Bạn đã thua." << endl;
+            inbang(board, true); 
+            return 0;
+        }
         inBang(board);
     }
 
     cout << "Chúc mừng bạn đã chiến thắng!" << endl;
+    intbang(board, true);
 
     return 0;
 }
