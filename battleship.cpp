@@ -9,8 +9,8 @@ using namespace std::chrono;
 
 const int BOARD_SIZE = 10;
 const int NUM_SHIPS = 3;
-const int TIME_LIMIT = 60*5;
-const int PLAY_LIMIT = 20;
+const int TIME_LIMIT = 60*5; 
+const int PLAY_LIMIT = 30;
 
 struct Ship {
     int x, y;
@@ -24,12 +24,7 @@ void TaoBang(vector<vector<char>>& board) {
         board.push_back(row);
     }
 }
-bool TaoBang(vector<vector<char>>& board) {
-    for (int i = 0; i < BOARD_SIZE; ++i) {
-        vector<char> row(BOARD_SIZE, '~');
-        board.push_back(row);
-    }
-}
+
 bool ViTriHopLe(const vector<vector<char>>& board, const Ship& ship) {
     if (ship.horizontal) {
         if (ship.y + ship.length > BOARD_SIZE) {
@@ -52,14 +47,15 @@ bool ViTriHopLe(const vector<vector<char>>& board, const Ship& ship) {
     }
     return true;
 }
+
 void Dat_vi_tri_thuyen(vector<vector<char>>& board, const Ship& ship) {
     if (ship.horizontal) {
         for (int i = 0; i < ship.length; ++i) {
-            board[ship.x][ship.y + i] = '~';
+            board[ship.x][ship.y + i] = 'S';
         }
     } else {
         for (int i = 0; i < ship.length; ++i) {
-            board[ship.x + i][ship.y] = '~';
+            board[ship.x + i][ship.y] = 'S';
         }
     }
 }
@@ -71,7 +67,6 @@ void placeShips(vector<Ship>& ships, vector<vector<char>>& board) {
         ship.length = rand() % 2 + 2; 
         ship.horizontal = rand() % 2 == 0;
 
-        
         do {
             ship.x = rand() % BOARD_SIZE;
             ship.y = rand() % BOARD_SIZE;
@@ -97,10 +92,10 @@ bool isHit(const vector<Ship>& ships, int x, int y) {
     return false;
 }
 
-void inBang(const vector<vector<char>>& board, bool showShips = false) {
+void InBang(const vector<vector<char>>& board, bool showShips = false) {
     for (const auto& row : board) {
         for (const auto& cell : row) {
-           if (cell == 'S' && !showShips) {
+            if (cell == 'S' && !showShips) {
                 cout << "~ ";
             } else {
                 cout << cell << " ";
@@ -110,10 +105,11 @@ void inBang(const vector<vector<char>>& board, bool showShips = false) {
     }
 }
 
-bool DemThoiGian(high_resolution_clock::time_point start_time){
-    auto current_time = higgh_resolution_clock::now();
-    auto duration = duration_cast<seconds>(current_time - start_time).count()
+bool DemThoiGian(high_resolution_clock::time_point start_time) {
+    auto current_time = high_resolution_clock::now();
+    auto duration = duration_cast<seconds>(current_time - start_time).count();
     return duration >= TIME_LIMIT;
+}
 
 bool GioiHanLuotChoi(int so_lan_thu) {
     return so_lan_thu >= PLAY_LIMIT;
@@ -128,11 +124,23 @@ int main() {
 
     int attempts = 0;
     int hits = 0;
+    int shipsHit = 0;
 
     auto start_time = high_resolution_clock::now();
 
-    while (hits < NUM_SHIPS) {
-        
+    while (shipsHit < 2) { 
+        if (DemThoiGian(start_time)) {
+            cout << "Hết thời gian! Bạn đã thua." << endl;
+            InBang(board, true); 
+            return 0;
+        }
+
+        if (GioiHanLuotChoi(attempts)) {
+            cout << "Hết lượt chơi! Bạn đã thua." << endl;
+            InBang(board, true); 
+            return 0;
+        }
+
         int x, y;
         cout << "Chọn tọa độ (x y): ";
         cin >> x >> y;
@@ -153,27 +161,36 @@ int main() {
             cout << "Đã trúng!" << endl;
             board[x][y] = 'X';
             hits++;
-        } else {
+            bool shipSunk = true;
+            for (const auto& ship : ships) {
+                for (int i = 0; i < ship.length; ++i) {
+                    if (ship.horizontal) {
+                        if (board[ship.x][ship.y + i] != 'X') {
+                            shipSunk = false;
+                            break;
+                        }
+                    } else {
+                        if (board[ship.x + i][ship.y] != 'X') {
+                            shipSunk = false;
+                            break;
+                        }
+                    }
+                }
+                if (shipSunk) {
+                    shipsHit++;
+                    break;
+                }
+            }
+        }
+        else {
             cout << "Trượt." << endl;
             board[x][y] = 'O';
         }
 
-         if (DemThoiGian(start_time)){
-            cout << "Hết thời gian! Bạn đã thua." << endl;
-             intbang(board, true);
-            return 0;
-         }
-
-        if (GioiHanLuotChoi(attempts)) {
-            cout << "Hết lượt chơi! Bạn đã thua." << endl;
-            inbang(board, true); 
-            return 0;
-        }
-        inBang(board);
+        InBang(board);
     }
 
     cout << "Chúc mừng bạn đã chiến thắng!" << endl;
-    intbang(board, true);
-
+    InBang(board, true); 
     return 0;
 }
