@@ -27,6 +27,7 @@ vector<Ship> ships;
 int attempts = 0; 
 int hits = 0; 
 
+//render
 SDL_Texture* loadTexture(const std::string &file, SDL_Renderer* ren) {
     SDL_Texture* texture = IMG_LoadTexture(ren, file.c_str());
     if (!texture) {
@@ -53,6 +54,7 @@ void renderBoard(SDL_Renderer* renderer) {
     }
 }
 
+//đặt thuyền
 bool isValidPlacement(const Ship& ship) {
     if (ship.horizontal) {
         if (ship.y + ship.length > BOARD_SIZE) return false;
@@ -96,7 +98,7 @@ void placeShips() {
         placeShip(ship);
     }
 }
-
+//trúng
 bool isHit(int x, int y) {
     for (const auto& ship : ships) {
         if (ship.horizontal) {
@@ -121,7 +123,7 @@ int main(int argc, char* argv[]) {
     SDL_Window* window = SDL_CreateWindow("Battleship", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-   
+   //render đồ họa
     SDL_Texture* background = loadTexture("board.png", renderer);
     if (!background) {
         SDL_DestroyRenderer(renderer);
@@ -158,7 +160,7 @@ int main(int argc, char* argv[]) {
     bool running = true;
     SDL_Event event;
 
-
+//đếm thời gian
     auto start_time = std::chrono::high_resolution_clock::now();
 
     while (running) {
@@ -201,6 +203,7 @@ int main(int argc, char* argv[]) {
             running = false;
         }
 
+        //thắng
         if (hits >= NUM_SHIPS * 2) { 
             cout << "Congratulation! You win" << endl;
             SDL_RenderClear(renderer);
