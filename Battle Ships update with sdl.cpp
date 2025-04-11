@@ -13,9 +13,9 @@ const int BOARD_SIZE = 10;
 const int CELL_SIZE = 50;
 const int SCREEN_HEIGHT = BOARD_SIZE * CELL_SIZE + 100;//+100 để hiện thị thêm bộ đếm trên màn hình
 const int SCREEN_WIDTH = BOARD_SIZE * CELL_SIZE;
-const int NUM_SHIPS = 3;
-const int MAX_ATTEMPTS = 36;
-const int TIME_LIMIT = 90;
+const int NUM_SHIPS = 3;// 3 tàu
+const int MAX_ATTEMPTS = 36;//36 lượt
+const int TIME_LIMIT = 90;//90 giây 
 
 struct Ship {
     int x, y;
@@ -35,13 +35,6 @@ SDL_Texture* loadTexture(const std::string &file, SDL_Renderer* ren) {
     }
     return texture;
 }
-bool isShipSunk(const Ship& ship) {
-    for (int i = 0; i < ship.length; ++i) {
-        int x = ship.x + (ship.horizontal ? 0 : i);
-        int y = ship.y + (ship.horizontal ? i : 0);
-        if (board[x][y] != 'X') return false;
-    }
-    return true;
 }
 //Tạo bảng
 void renderBoard(SDL_Renderer* renderer, SDL_Texture* shipImage) {
@@ -77,17 +70,6 @@ void renderBoard(SDL_Renderer* renderer, SDL_Texture* shipImage) {
         }
     }
 }
-//Vị trí tàu
-void revealShips(SDL_Renderer* renderer, SDL_Texture* shipImage) {
-    for (const auto& ship : ships) {
-        for (int i = 0; i < ship.length; ++i) {
-            int x = ship.x + (ship.horizontal ? 0 : i);
-            int y = ship.y + (ship.horizontal ? i : 0);
-            SDL_Rect dst = {y * CELL_SIZE, x * CELL_SIZE, CELL_SIZE, CELL_SIZE};
-            SDL_RenderCopy(renderer, shipImage, NULL, &dst);
-        }
-    }
-}
 //Đặt ví trí cho tàu
 bool isValidPlacement(const Ship& ship) {
     if (ship.horizontal) {
@@ -119,7 +101,7 @@ void placeShips() {
     srand(time(0));
     for (int i = 0; i < NUM_SHIPS; ++i) {
         Ship ship;
-        ship.length = rand() % 2 + 2;
+        ship.length = rand() % 2 + 2;//tàu 2 hoặc tàu 3
         ship.horizontal = rand() % 2 == 0;
         do {
             ship.x = rand() % BOARD_SIZE;
@@ -128,6 +110,13 @@ void placeShips() {
         placeShip(ship);
     }
 }
+bool isShipSunk(const Ship& ship) {
+    for (int i = 0; i < ship.length; ++i) {
+        int x = ship.x + (ship.horizontal ? 0 : i);
+        int y = ship.y + (ship.horizontal ? i : 0);
+        if (board[x][y] != 'X') return false;
+    }
+    return true;
 //Render chữ trên màn hình
 void renderText(SDL_Renderer* renderer, TTF_Font* font, const string& text, int x, int y) {
     SDL_Color color = {255, 255, 255, 255};
@@ -151,6 +140,7 @@ void renderCenterText(SDL_Renderer* renderer, TTF_Font* font, const string& text
 void waitForKeyToStart(SDL_Renderer* renderer, TTF_Font* font) {
     bool waiting = true;
     SDL_Event event;
+   //Màn hình chờ nhấn P
     while (waiting) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) exit(0);
@@ -158,13 +148,23 @@ void waitForKeyToStart(SDL_Renderer* renderer, TTF_Font* font) {
                 waiting = false;
             }
         }
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(renderer, 0, 131, 131, 255);
         SDL_RenderClear(renderer);
         renderCenterText(renderer, font, "Press P to start.");
         SDL_RenderPresent(renderer);
     }
 }
-
+//Vị trí kết quả tàu
+void revealShips(SDL_Renderer* renderer, SDL_Texture* shipImage) {
+    for (const auto& ship : ships) {
+        for (int i = 0; i < ship.length; ++i) {
+            int x = ship.x + (ship.horizontal ? 0 : i);
+            int y = ship.y + (ship.horizontal ? i : 0);
+            SDL_Rect dst = {y * CELL_SIZE, x * CELL_SIZE, CELL_SIZE, CELL_SIZE};
+            SDL_RenderCopy(renderer, shipImage, NULL, &dst);
+        }
+    }
+}
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
@@ -179,7 +179,7 @@ int main(int argc, char* argv[]) {
     SDL_Texture* TimesoutImage = loadTexture("Times out!.png", renderer);
     SDL_Texture* shipImage = loadTexture("tàu 2.jpg", renderer);
 
-    TTF_Font* font = TTF_OpenFont("arial.ttf", 24);
+    TTF_Font* font = TTF_OpenFont("arial.ttf", 24);//font chữ và size
     if (!font) {
         cout << "Can't reload font: " << TTF_GetError() << endl;
         return -1;
@@ -215,7 +215,7 @@ int main(int argc, char* argv[]) {
 
                 break;
             }
-
+//Tương tác chuột
             while (SDL_PollEvent(&event)) {
                 if (event.type == SDL_QUIT) return 0;
                 else if (event.type == SDL_MOUSEBUTTONDOWN) {
