@@ -242,7 +242,7 @@ int main(int argc, char* argv[]) {
                 break;
             }
 
-            if (hits >= NUM_SHIPS * 2) {
+            if (hits > NUM_SHIPS * 2) {
                 SDL_RenderClear(renderer);
                 SDL_RenderCopy(renderer, winImage, NULL, NULL);
                 SDL_RenderPresent(renderer);
