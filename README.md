@@ -27,9 +27,9 @@ Hết số lượt chơi hoặc hết thời gian → Thất bại!
 
 ⏱️ Quy tắc
 
-Bạn có tối đa 32 lượt chơi.
+Bạn có tối đa 36 lượt chơi.
 
-Tổng thời gian để hoàn thành game là 65 giây.
+Tổng thời gian để hoàn thành game là 90 giây.
 
 Mỗi thuyền có chiều dài ngẫu nhiên từ 2 đến 3 ô và được đặt ngẫu nhiên trên bảng.
 
@@ -115,3 +115,5 @@ Không chia folder nhưng có thể tách thành:
 - Có hệ thống kiểm tra thắng/thua, thời gian, lượt bắn.
 
 - Giao diện trực quan bằng SDL2 – đủ sinh động cho một mini game.
+
+- Tương tác dễ dàng qua bàn phím và chuột.
