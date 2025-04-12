@@ -99,14 +99,20 @@ void placeShip(const Ship& ship) {
 }
 void placeShips() {
     srand(time(0));
+    int numLength2Ships = 0;//số tàu 2 đã đặt
+
     for (int i = 0; i < NUM_SHIPS; ++i) {
         Ship ship;
-        ship.length = rand() % 2 + 2;//tàu 2 hoặc tàu 3
-        ship.horizontal = rand() % 2 == 0;
         do {
+            int len = rand() % 2 + 2;//2 hoặc 3
+            if (len == 2 && numLength2Ships >= 2) len = 3;//đủ 2 tàu 2 thì ép length = 3
+            ship.length = len;//chiều dài
+            ship.horizontal = rand() % 2 == 0;//hướng
             ship.x = rand() % BOARD_SIZE;
             ship.y = rand() % BOARD_SIZE;
         } while (!isValidPlacement(ship));
+
+        if (ship.length == 2) numLength2Ships++;
         placeShip(ship);
     }
 }
@@ -225,7 +231,7 @@ int main(int argc, char* argv[]) {
                     else if (board[x][y] == 'S') { board[x][y] = 'X'; attempts++; hits++; }
                 }
             }
-
+//Đếm lượt
             if (attempts >= MAX_ATTEMPTS) {
                 SDL_RenderClear(renderer);
                 SDL_RenderCopy(renderer, lostImage, NULL, NULL);
@@ -242,7 +248,7 @@ int main(int argc, char* argv[]) {
                 break;
             }
 
-            if (hits > NUM_SHIPS * 2) {
+            if (hits > NUM_SHIPS*2 && hits < NUM_SHIPS*3) {
                 SDL_RenderClear(renderer);
                 SDL_RenderCopy(renderer, winImage, NULL, NULL);
                 SDL_RenderPresent(renderer);
