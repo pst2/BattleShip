@@ -73,7 +73,7 @@ renderBoard() và Result(): Hàm vẽ bảng chơi lên màn hình, với mã m�
 
 + SDL_QUIT: Đóng game khi người dùng tắt cửa sổ.
 
-+ SDL_KEYDOWN: Nhận tương tác bàn phím, phản hồi khi người chơi nhấn phím
++ SDL_MOUSEBUTTONUP, SDL_MOUSEBUTTONDOWN: Nhận tín hiệu khi người chơi ấn nút Play, Play Again, Quit.
 
 ⏱️ Quản lý thời gian & lượt chơi
 Sử dụng chrono để đo thời gian thực từ khi game bắt đầu.
@@ -86,18 +86,23 @@ Game kết thúc khi người chơi trúng đủ số ô thuyền.
 Tải các ảnh:
 
 + "board.png" làm nền bảng chơi
-![board](https://github.com/user-attachments/assets/cb1ba0b9-1857-49e9-b0a0-9af20a66d27f)
+
+![board](https://github.com/user-attachments/assets/a48b35de-c6db-4906-a7c4-cd7143d65694)
 
 + "Congratulation! You win!.png" khi thắng
-![Congratulation! You win!](https://github.com/user-attachments/assets/c7fe97af-7447-498a-928f-5ba331ef3562)
+
+![Congratulation! You win!](https://github.com/user-attachments/assets/69062d68-23ca-44fc-97b0-4f288e81a27d)
 
 + "You lost.png" khi thua do hết lượt
-  ![You lost](https://github.com/user-attachments/assets/097076a0-c001-4ff2-9cef-92c2b3c8647b)
+
+![You lost](https://github.com/user-attachments/assets/53e3df56-62de-4eb4-b449-fe3fb972795e)
 
 + "Times out!.png" khi thua do hết thời gian
-![Times out!](https://github.com/user-attachments/assets/496d9f91-d9ca-42a9-93b8-40df21444fdd)
+
+![Times out!](https://github.com/user-attachments/assets/c6215e2e-925d-44d2-a05d-d46ebb0c2a5d)
 
 + "Tàu 2" hiển thị khi người chơi đánh chìm tàu
+
 ![tàu 2](https://github.com/user-attachments/assets/98d9f501-ba9b-4b10-a242-5a471f84b9b8)
 
 🧪 Tệp liên quan:
