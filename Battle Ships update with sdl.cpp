@@ -169,8 +169,8 @@ void renderButton(SDL_Renderer* renderer, TTF_Font* font, const string& text, SD
     SDL_Rect textRect;
 
         textRect = {
-            rect.x + (rect.w - surface->w) / 2,
-            rect.y + (rect.h - surface->h) / 2,
+            rect.x + (rect.w - surface->w) / 2,//căn giữa chiều ngang
+            rect.y + (rect.h - surface->h) / 2,//cũng là căn giữa nhưng là chiều dọc
             surface->w,
             surface->h
         };
@@ -188,7 +188,7 @@ string waitForKeyToStart(SDL_Renderer* renderer, TTF_Font* font, SDL_Texture* ba
 
     SDL_Event event;
     SDL_StartTextInput();
-
+//tạo nút play
     SDL_Rect playButton = {SCREEN_WIDTH / 2 - 75, SCREEN_HEIGHT / 2 + 80, 150, 50};
 
     while (waiting) {
