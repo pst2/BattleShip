@@ -13,17 +13,37 @@ Tìm và bắn trúng toàn bộ các thuyền địch ẩn trên một bảng 1
 
 🕹️ Cách chơi
 
-Mỗi lượt chơi, bạn click chuột trái vào một ô trên bảng.
+Sau khi khởi chạy màn hình chờ sẽ hiện lên.
 
+![Screenshot 2025-04-18 140152](https://github.com/user-attachments/assets/b11fa6f5-aa91-4c85-bfc3-8efee1abbd40)
+
+Việc bạn cần làm là nhập tên và nhấn nút "Play" để bắt đầu.
+
+![Screenshot 2025-04-18 140246](https://github.com/user-attachments/assets/670f872a-4710-444d-8c72-67c6f6c390d3)
+
+Mỗi lượt chơi, bạn click chuột trái vào một ô trên bảng.
 Nếu ô đó có thuyền, nó sẽ chuyển sang màu đỏ (X) – bạn đã bắn trúng!
 
+![Screenshot 2025-04-18 140352](https://github.com/user-attachments/assets/fbbe9498-3746-49d4-bec1-cca0c3c2269b)
+
+
 Nếu ô đó trống, nó sẽ chuyển sang màu xanh (O) – bạn đã bắn trượt.
+
+![Screenshot 2025-04-18 140332](https://github.com/user-attachments/assets/ae34fb46-2249-41b1-9abc-84aa72e7b839)
+
+Sau khi chiến thắng, hết lượt chơi hoặc hết thời gian chơi - bảng vị trí thực của thuyền sẽ hiện lên.
+
+![Screenshot 2025-04-18 140439](https://github.com/user-attachments/assets/1eb5a066-cde0-4ab4-aa3a-f41f83340891)
 
  Game kết thúc khi:
 
 Bạn bắn trúng hết toàn bộ thuyền → Chiến thắng!
 
 Hết số lượt chơi hoặc hết thời gian → Thất bại!
+
+Cuối cùng sẽ hiển thị màn hình chờ để bạn có thể chọn chơi lại hoặc thoát trò chơi.
+
+![Screenshot 2025-04-18 140456](https://github.com/user-attachments/assets/505c5983-d3ad-4b27-8494-da256dd55d74)
 
 ⏱️ Quy tắc
 
@@ -53,6 +73,10 @@ vector<vector<char>> board: Bảng trạng thái lưu vị trí các ô (~, S, X
 placeShips() & placeShip(): Tạo vị trí tàu ngẫu nhiên và đặt vào bảng nếu không trùng lặp.
 
 isHit(): Kiểm tra người chơi bắn có trúng tàu không.
+
+revealShips(): Vị trí đồ họa của tàu.
+
+isValidPlacement(): Vị trí hợp lệ để có thể đặt thuyền ngang hoặc dọc mà không bị trùng lặp.
 
 🖼️ Đồ họa (SDL2 + SDL2_image)
 loadTexture(): Hàm hỗ trợ tải ảnh từ file .png để hiển thị lên renderer.
@@ -106,7 +130,6 @@ Tải các ảnh:
 ![tàu 2](https://github.com/user-attachments/assets/98d9f501-ba9b-4b10-a242-5a471f84b9b8)
 
 🧪 Tệp liên quan:
-Không chia folder nhưng có thể tách thành:
 
 + graphics/: chứa các ảnh PNG
 
