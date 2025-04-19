@@ -5,6 +5,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 #include <chrono>
 #include <fstream>
 
@@ -15,8 +16,14 @@ const int CELL_SIZE = 60;
 const int SCREEN_HEIGHT = BOARD_SIZE * CELL_SIZE + 100;//+100 để hiện thị thêm bộ đếm trên màn hình
 const int SCREEN_WIDTH = BOARD_SIZE * CELL_SIZE;
 const int NUM_SHIPS = 3;
-const int MAX_ATTEMPTS = 36;
+const int MAX_ATTEMPTS = 39;
 const int TIME_LIMIT = 90;
+
+Mix_Chunk* hitSound = nullptr;
+Mix_Chunk* missSound = nullptr;
+Mix_Music* backgroundMusic = nullptr;
+Mix_Chunk* winSound = nullptr;
+Mix_Chunk* loseSound = nullptr;
 
 struct Ship {
     int x, y;
@@ -28,6 +35,7 @@ vector<vector<char>> board(BOARD_SIZE, vector<char>(BOARD_SIZE, '~'));
 vector<Ship> ships;
 int attempts = 0;
 int hits = 0;
+int totalShipCells = 0;
 
 SDL_Texture* loadTexture(const std::string &file, SDL_Renderer* ren) {
     SDL_Texture* texture = IMG_LoadTexture(ren, file.c_str());
@@ -78,7 +86,7 @@ void renderBoard(SDL_Renderer* renderer, SDL_Texture* shipImage) {
         }
     }
 }
-//Vị trí tàu
+//Render vị trí tàu
 void revealShips(SDL_Renderer* renderer, SDL_Texture* shipImage) {
     for (const auto& ship : ships) {
         for (int i = 0; i < ship.length; ++i) {
@@ -119,7 +127,7 @@ void placeShip(const Ship& ship) {
 void placeShips() {
     srand(time(0));
     int numLength2Ships = 0;//số tàu 2 đã đặt
-
+    totalShipCells = 0;
     for (int i = 0; i < NUM_SHIPS; ++i) {
         Ship ship;
         do {
@@ -130,7 +138,7 @@ void placeShips() {
             ship.x = rand() % BOARD_SIZE;
             ship.y = rand() % BOARD_SIZE;
         } while (!isValidPlacement(ship));
-
+        totalShipCells += ship.length;
         if (ship.length == 2) numLength2Ships++;
         placeShip(ship);
     }
@@ -169,8 +177,8 @@ void renderButton(SDL_Renderer* renderer, TTF_Font* font, const string& text, SD
     SDL_Rect textRect;
 
         textRect = {
-            rect.x + (rect.w - surface->w) / 2,//căn giữa chiều ngang
-            rect.y + (rect.h - surface->h) / 2,//cũng là căn giữa nhưng là chiều dọc
+            rect.x + (rect.w - surface->w) / 2,
+            rect.y + (rect.h - surface->h) / 2,
             surface->w,
             surface->h
         };
@@ -188,9 +196,9 @@ string waitForKeyToStart(SDL_Renderer* renderer, TTF_Font* font, SDL_Texture* ba
 
     SDL_Event event;
     SDL_StartTextInput();
-//tạo nút play
-    SDL_Rect playButton = {SCREEN_WIDTH / 2 - 75, SCREEN_HEIGHT / 2 + 80, 150, 50};
 
+    SDL_Rect playButton = {SCREEN_WIDTH / 2 - 75, SCREEN_HEIGHT / 2 + 80, 150, 50};
+//Vẽ nút Play
     while (waiting) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) exit(0);
@@ -253,7 +261,7 @@ void renderexitButton(SDL_Renderer* renderer, TTF_Font* font, const std::string&
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderDrawRect(renderer, &rect);
 
-    // Render text (centered)
+
     SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), {0, 0, 0, 255});
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
@@ -268,12 +276,39 @@ void renderexitButton(SDL_Renderer* renderer, TTF_Font* font, const std::string&
     SDL_DestroyTexture(texture);
 }
 
-
-
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
     TTF_Init();
+
+    //Khởi tạo âm thanh trúng, trượt
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+    hitSound = Mix_LoadWAV("hit.wav");
+    missSound = Mix_LoadWAV("miss.wav");
+    if (!hitSound || !missSound) {
+    cout << "Failed to load sound: " << Mix_GetError() << endl;
+    return -1;
+    }
+    //Nhạc nền
+    backgroundMusic = Mix_LoadMUS("background_music.mp3");
+    if (!backgroundMusic) {
+    cout << "Failed to load background music: " << Mix_GetError() << endl;
+    }
+    else{
+        Mix_PlayMusic(backgroundMusic, -1);//Lặp
+    }
+    //Âm thanh thắng
+    winSound = Mix_LoadWAV("win_sound.wav");
+    if (!winSound) {
+    SDL_Log("Failed to load win music SDL_mixer Error: %s", Mix_GetError());
+    }
+    //Âm thanh thua
+    loseSound = Mix_LoadWAV("lose_sound.wav");
+    if (!loseSound) {
+    SDL_Log("Failed to load lose music SDL_mixer Error: %s", Mix_GetError());
+    }
+
+
 //Tạo cửa sổ, đồ họa, font chữ
     SDL_Window* window = SDL_CreateWindow("Battleship", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -307,6 +342,7 @@ int main(int argc, char* argv[]) {
             int elapsed_time = chrono::duration_cast<chrono::seconds>(current_time - start_time).count();
 
             if (elapsed_time >= TIME_LIMIT) {
+                Mix_PlayChannel(-1, loseSound, 0);
                 SDL_RenderClear(renderer);
                 SDL_RenderCopy(renderer, TimesoutImage, NULL, NULL);
                 SDL_RenderPresent(renderer);
@@ -327,12 +363,13 @@ int main(int argc, char* argv[]) {
                 else if (event.type == SDL_MOUSEBUTTONDOWN) {
                     int x = event.button.y / CELL_SIZE;
                     int y = event.button.x / CELL_SIZE;
-                    if (board[x][y] == '~') { board[x][y] = 'O'; attempts++; }
-                    else if (board[x][y] == 'S') { board[x][y] = 'X'; attempts++; hits++; }
+                    if (board[x][y] == '~') { board[x][y] = 'O'; attempts++; Mix_PlayChannel(-1, missSound, 0); }
+                    else if (board[x][y] == 'S') { board[x][y] = 'X'; attempts++; hits++; Mix_PlayChannel(-1, hitSound, 0); }
                 }
             }
 
             if (attempts >= MAX_ATTEMPTS) {
+                Mix_PlayChannel(-1, loseSound, 0);
                 SDL_RenderClear(renderer);
                 SDL_RenderCopy(renderer, lostImage, NULL, NULL);
                 SDL_RenderPresent(renderer);
@@ -343,12 +380,13 @@ int main(int argc, char* argv[]) {
                 renderBoard(renderer, shipImage);
                 revealShips(renderer, shipImage);
                 SDL_RenderPresent(renderer);
-                SDL_Delay(5000);
+                SDL_Delay(3000);
 
                 break;
             }
 
-            if (hits > NUM_SHIPS*2 && hits < NUM_SHIPS*3 ) {
+            if (hits == totalShipCells) {
+                Mix_PlayChannel(-1, winSound, 0);
                 SDL_RenderClear(renderer);
                 SDL_RenderCopy(renderer, winImage, NULL, NULL);
                 SDL_RenderPresent(renderer);
@@ -359,7 +397,7 @@ int main(int argc, char* argv[]) {
                 renderBoard(renderer, shipImage);
                 revealShips(renderer, shipImage);
                 SDL_RenderPresent(renderer);
-                SDL_Delay(5000);
+                SDL_Delay(3000);
 
                 break;
             }
@@ -437,5 +475,12 @@ int main(int argc, char* argv[]) {
     IMG_Quit();
     TTF_Quit();
     SDL_Quit();
+    Mix_FreeChunk(hitSound);
+    Mix_FreeChunk(missSound);
+    Mix_FreeMusic(backgroundMusic);
+    Mix_FreeChunk(winSound);
+    Mix_FreeChunk(loseSound);
+    Mix_CloseAudio();
+
     return 0;
 }
