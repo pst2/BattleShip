@@ -5,7 +5,14 @@ Battleship là một trò chơi hải chiến cổ điển, nơi hai người ch
 
 Trong phiên bản C++ của Battleship, chương trình có thể sử dụng mảng hai chiều hoặc vector để đại diện cho bảng chơi, với các chức năng xử lý đặt tàu, bắn súng, kiểm tra trạng thái tàu và xác định người chiến thắng. Trò chơi có thể được triển khai dưới dạng giao diện console hoặc kết hợp với thư viện đồ họa như SDL2 để hiển thị trực quan.
 
-2. Cách chơi
+2. Cách tải game
+
+Người chơi tải trực tiếp file "BattleShipsGame.zip", trong đó đã có đầy đủ tài nguyên để có thể chạy game.
+
+Sau khi tải thành công file ZIP, mở file và tìm file có tên "BattleShips" hoặc "start_game" để mở game.
+
+
+3. Cách chơi
 
 🎯 Mục tiêu
 
@@ -14,12 +21,9 @@ Tìm và bắn trúng toàn bộ các thuyền địch ẩn trên một bảng 1
 🕹️ Cách chơi
 
 Sau khi khởi chạy màn hình chờ sẽ hiện lên.
-
-![Screenshot 2025-04-18 140152](https://github.com/user-attachments/assets/b11fa6f5-aa91-4c85-bfc3-8efee1abbd40)
-
 Việc bạn cần làm là nhập tên và nhấn nút "Play" để bắt đầu.
 
-![Screenshot 2025-04-18 140246](https://github.com/user-attachments/assets/670f872a-4710-444d-8c72-67c6f6c390d3)
+![Screenshot 2025-04-18 140152](https://github.com/user-attachments/assets/b11fa6f5-aa91-4c85-bfc3-8efee1abbd40)
 
 Mỗi lượt chơi, bạn click chuột trái vào một ô trên bảng.
 Nếu ô đó có thuyền, nó sẽ chuyển sang màu đỏ (X) – bạn đã bắn trúng!
@@ -47,7 +51,7 @@ Cuối cùng sẽ hiển thị màn hình chờ để bạn có thể chọn ch�
 
 ⏱️ Quy tắc
 
-Bạn có tối đa 36 lượt chơi.
+Bạn có tối đa 39 lượt chơi.
 
 Tổng thời gian để hoàn thành game là 90 giây.
 
@@ -78,7 +82,7 @@ revealShips(): Vị trí đồ họa của tàu.
 
 isValidPlacement(): Vị trí hợp lệ để có thể đặt thuyền ngang hoặc dọc mà không bị trùng lặp.
 
-🖼️ Đồ họa (SDL2 + SDL2_image)
+🖼️ Đồ họa (SDL2_image, SDL2_ttf, SDL2_mixer)
 loadTexture(): Hàm hỗ trợ tải ảnh từ file .png để hiển thị lên renderer.
 
 renderBoard() và Result(): Hàm vẽ bảng chơi lên màn hình, với mã màu cho từng trạng thái:
@@ -90,6 +94,18 @@ renderBoard() và Result(): Hàm vẽ bảng chơi lên màn hình, với mã m�
 + Xanh lá (S) = Vị trí thuyền
 
 + Xám = Ô trống
+
+renderText(): Hàm khởi tạo chữ hiện trên màn hình chơi với font chữ arial.
+
+Mix_OpenAudio(): Thêm hiệu ứng âm thanh vào các event trong game:
+
++ music_background: Nhạc nền chạy xuyên suốt trò chơi.
+
++ win_sound: Âm thanh chiến thắng khi người chơi đánh chìm mọi con tàu.
+
++ lose_sound: Âm thanh thua cuộc khi người chơi hết lượt bắn hoặc hết thời gian.
+
++ hit và miss: Âm thanh khi người chơi bắn trúng hoặc trượt tàu trên bảng.
 
 🕹️ Xử lý sự kiện (SDL_Event)
 
