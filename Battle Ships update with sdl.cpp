@@ -16,7 +16,7 @@ const int CELL_SIZE = 60;
 const int SCREEN_HEIGHT = BOARD_SIZE * CELL_SIZE + 100;//+100 để hiện thị thêm bộ đếm trên màn hình
 const int SCREEN_WIDTH = BOARD_SIZE * CELL_SIZE;
 const int NUM_SHIPS = 3;
-const int MAX_ATTEMPTS = 39;
+const int MAX_ATTEMPTS = 390;
 const int TIME_LIMIT = 90;
 
 Mix_Chunk* hitSound = nullptr;
@@ -53,7 +53,7 @@ bool isShipSunk(const Ship& ship) {
     return true;
 }
 //Tạo bảng
-void renderBoard(SDL_Renderer* renderer, SDL_Texture* shipImage) {
+void renderBoard(SDL_Renderer* renderer, SDL_Texture* ship2HImage, SDL_Texture* ship3HImage, SDL_Texture* ship2VImage, SDL_Texture* ship3VImage) {
     for (int i = 0; i < BOARD_SIZE; ++i) {
         for (int j = 0; j < BOARD_SIZE; ++j) {
             SDL_Rect cell = {j * CELL_SIZE, i * CELL_SIZE, CELL_SIZE, CELL_SIZE};
@@ -75,26 +75,43 @@ void renderBoard(SDL_Renderer* renderer, SDL_Texture* shipImage) {
         }
     }
 
-    for (const auto& ship : ships) {
-        if (isShipSunk(ship)) {
-            for (int i = 0; i < ship.length; ++i) {
-                int x = ship.x + (ship.horizontal ? 0 : i);
-                int y = ship.y + (ship.horizontal ? i : 0);
-                SDL_Rect dst = {y * CELL_SIZE, x * CELL_SIZE, CELL_SIZE, CELL_SIZE};
-                SDL_RenderCopy(renderer, shipImage, NULL, &dst);
+   for (const auto& ship : ships) {
+    if (isShipSunk(ship)) {
+        SDL_Texture* shipTex = nullptr;
+        if (ship.length == 2){
+            shipTex = ship.horizontal ? ship2HImage : ship2VImage;
+           }
+        else{
+            shipTex = ship.horizontal ? ship3HImage : ship3VImage;
             }
+        SDL_Rect dst;
+        if (ship.horizontal) {
+            dst = {ship.y * CELL_SIZE, ship.x * CELL_SIZE, ship.length * CELL_SIZE, CELL_SIZE};
+        } else {
+            dst = {ship.y * CELL_SIZE, ship.x * CELL_SIZE, CELL_SIZE, ship.length * CELL_SIZE};
         }
+        SDL_RenderCopy(renderer, shipTex, NULL, &dst);
     }
 }
+
+}
 //Render vị trí tàu
-void revealShips(SDL_Renderer* renderer, SDL_Texture* shipImage) {
+void revealShips(SDL_Renderer* renderer, SDL_Texture* ship2HImage, SDL_Texture* ship3HImage, SDL_Texture* ship2VImage, SDL_Texture* ship3VImage) {
     for (const auto& ship : ships) {
-        for (int i = 0; i < ship.length; ++i) {
-            int x = ship.x + (ship.horizontal ? 0 : i);
-            int y = ship.y + (ship.horizontal ? i : 0);
-            SDL_Rect dst = {y * CELL_SIZE, x * CELL_SIZE, CELL_SIZE, CELL_SIZE};
-            SDL_RenderCopy(renderer, shipImage, NULL, &dst);
-        }
+        SDL_Texture* shipTex = nullptr;
+        if (ship.length == 2){
+            shipTex = ship.horizontal ? ship2HImage : ship2VImage;
+           }
+        else{
+            shipTex = ship.horizontal ? ship3HImage : ship3VImage;
+            }
+        SDL_Rect dst = {
+            ship.y * CELL_SIZE,
+            ship.x * CELL_SIZE,
+            (ship.horizontal ? ship.length : 1) * CELL_SIZE,
+            (ship.horizontal ? 1 : ship.length) * CELL_SIZE
+        };
+        SDL_RenderCopy(renderer, shipTex, NULL, &dst);
     }
 }
 //Đặt ví trí cho tàu
@@ -276,6 +293,8 @@ void renderexitButton(SDL_Renderer* renderer, TTF_Font* font, const std::string&
     SDL_DestroyTexture(texture);
 }
 
+
+
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
@@ -317,7 +336,11 @@ int main(int argc, char* argv[]) {
     SDL_Texture* winImage = loadTexture("Congratulation! You win!.png", renderer);
     SDL_Texture* lostImage = loadTexture("You lost.png", renderer);
     SDL_Texture* TimesoutImage = loadTexture("Times out!.png", renderer);
-    SDL_Texture* shipImage = loadTexture("tàu 2.jpg", renderer);
+    SDL_Texture* ship2VImage = loadTexture("tàu 2 ngang.png", renderer);
+    SDL_Texture* ship3VImage = loadTexture("tàu 2 ngang.png", renderer);
+    SDL_Texture* ship2HImage = loadTexture("tàu 2.png", renderer);
+    SDL_Texture* ship3HImage = loadTexture("tàu 2.png", renderer);
+
 
     TTF_Font* font = TTF_OpenFont("arial.ttf", 24);
     if (!font) {
@@ -346,14 +369,14 @@ int main(int argc, char* argv[]) {
                 SDL_RenderClear(renderer);
                 SDL_RenderCopy(renderer, TimesoutImage, NULL, NULL);
                 SDL_RenderPresent(renderer);
-                SDL_Delay(3000);
+                SDL_Delay(3500);
 
                 SDL_RenderClear(renderer);
                 SDL_RenderCopy(renderer, background, NULL, NULL);
-                renderBoard(renderer, shipImage);
-                revealShips(renderer, shipImage);
+                renderBoard(renderer, ship2HImage,ship3HImage, ship2VImage,ship3VImage);
+                revealShips(renderer, ship2HImage,ship3HImage, ship2VImage,ship3VImage);
                 SDL_RenderPresent(renderer);
-                SDL_Delay(5000);
+                SDL_Delay(3000);
 
                 break;
             }
@@ -373,12 +396,12 @@ int main(int argc, char* argv[]) {
                 SDL_RenderClear(renderer);
                 SDL_RenderCopy(renderer, lostImage, NULL, NULL);
                 SDL_RenderPresent(renderer);
-                SDL_Delay(3000);
+                SDL_Delay(3500);
 
                 SDL_RenderClear(renderer);
                 SDL_RenderCopy(renderer, background, NULL, NULL);
-                renderBoard(renderer, shipImage);
-                revealShips(renderer, shipImage);
+                renderBoard(renderer, ship2VImage, ship3VImage, ship2HImage,ship3HImage);
+                revealShips(renderer, ship2VImage, ship3VImage, ship2HImage,ship3HImage);
                 SDL_RenderPresent(renderer);
                 SDL_Delay(3000);
 
@@ -390,12 +413,12 @@ int main(int argc, char* argv[]) {
                 SDL_RenderClear(renderer);
                 SDL_RenderCopy(renderer, winImage, NULL, NULL);
                 SDL_RenderPresent(renderer);
-                SDL_Delay(3000);
+                SDL_Delay(3500);
 
                 SDL_RenderClear(renderer);
                 SDL_RenderCopy(renderer, background, NULL, NULL);
-                renderBoard(renderer, shipImage);
-                revealShips(renderer, shipImage);
+                renderBoard(renderer, ship2VImage, ship3VImage, ship2HImage,ship3HImage);
+                revealShips(renderer, ship2VImage, ship3VImage, ship2HImage,ship3HImage);
                 SDL_RenderPresent(renderer);
                 SDL_Delay(3000);
 
@@ -404,7 +427,7 @@ int main(int argc, char* argv[]) {
 
             SDL_RenderClear(renderer);
             SDL_RenderCopy(renderer, background, NULL, NULL);
-            renderBoard(renderer, shipImage);
+            renderBoard(renderer, ship2VImage, ship3VImage, ship2HImage,ship3HImage);
 //Hiển thị bố đếm thời gian và lượt chơi trên màn hình
             string timeText = "Time left: " + to_string(TIME_LIMIT - elapsed_time) + "s";
             string attemptText = "Attempts left: " + to_string(MAX_ATTEMPTS - attempts);
@@ -475,6 +498,10 @@ int main(int argc, char* argv[]) {
     IMG_Quit();
     TTF_Quit();
     SDL_Quit();
+    SDL_DestroyTexture(ship2VImage);
+    SDL_DestroyTexture(ship3VImage);
+    SDL_DestroyTexture(ship2HImage);
+    SDL_DestroyTexture(ship3HImage);
     Mix_FreeChunk(hitSound);
     Mix_FreeChunk(missSound);
     Mix_FreeMusic(backgroundMusic);
