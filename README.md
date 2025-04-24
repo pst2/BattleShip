@@ -89,8 +89,7 @@ Màn hình chờ sau khi chơi xong một ván
 
 Hình ảnh tàu
 
-![tàu 2](https://github.com/user-attachments/assets/73d77d50-e7af-415c-87db-e1ffdeb7b1a6)
-
+![tàu 2 ngang](https://github.com/user-attachments/assets/3d25f1ac-b677-4821-ba83-783e336876f6)
 
 ### ⏱️ Quy tắc
 
