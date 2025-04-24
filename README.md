@@ -1,163 +1,102 @@
-# BattleShip
-1. Giới thiệu
+# 🚢 BattleShip - Trò chơi hải chiến cổ điển bằng C++
 
-Battleship là một trò chơi hải chiến cổ điển, nơi hai người chơi sắp xếp hạm đội của mình trên một lưới ô vuông và cố gắng đoán vị trí tàu của đối phương để bắn trúng và đánh chìm chúng. Trò chơi được lập trình bằng C++ do ngôn ngữ này cung cấp hiệu suất cao và khả năng xử lý logic game mạnh mẽ.
+## 🎮 Giới thiệu
 
-Trong phiên bản C++ của Battleship, chương trình có thể sử dụng mảng hai chiều hoặc vector để đại diện cho bảng chơi, với các chức năng xử lý đặt tàu, bắn súng, kiểm tra trạng thái tàu và xác định người chiến thắng. Trò chơi có thể được triển khai dưới dạng giao diện console hoặc kết hợp với thư viện đồ họa như SDL2 để hiển thị trực quan.
+**BattleShip** là một trò chơi hải chiến cổ điển được lập trình bằng **C++** và sử dụng thư viện **SDL2** để hiển thị đồ họa, âm thanh và xử lý sự kiện. Trò chơi mang lại trải nghiệm chiến thuật đơn giản nhưng hấp dẫn – nơi người chơi cần tìm và đánh chìm các tàu địch được giấu ngẫu nhiên trên một bảng 10x10.
 
-2. Cách tải game
+## 📥 Cài đặt & Tải game
 
-Người chơi tải trực tiếp file "BattleShipsGame.zip", trong đó đã có đầy đủ tài nguyên để có thể chạy game.
+1. Tải file **`BattleShipsGame.zip`** từ repo.
+2. Giải nén và chạy file thực thi có tên `BattleShips` hoặc `start_game`.
 
-Sau khi tải thành công file ZIP, mở file và tìm file có tên "BattleShips" hoặc "start_game" để mở game.
+### 🔧 Các điểm nổi bật từ code:
 
+- **Đồ họa trực quan bằng SDL2**: sử dụng hình ảnh PNG cho nền và tàu, vẽ bảng bằng `SDL_RenderDrawRect` và `SDL_RenderFillRect`.
+- **Âm thanh sống động** với SDL_mixer: bao gồm hiệu ứng trúng, trượt, thắng và thua, cùng nhạc nền lặp xuyên suốt game.
+- **Giao diện người dùng**: người chơi nhập tên, bắt đầu game, nhận phản hồi từ lượt chơi và chọn chơi lại hoặc thoát.
+- **Quản lý logic game**:
+  - Bảng 10x10 được lưu bằng `vector<vector<char>>`.
+  - Tàu có chiều dài 2 hoặc 3 ô, đặt ngẫu nhiên không chồng lặp.
+  - Hệ thống tính số lượt bắn (`MAX_ATTEMPTS = 39`) và thời gian chơi (`TIME_LIMIT = 90 giây`).
+  - Các trạng thái ô: `~` (trống), `S` (tàu), `X` (trúng), `O` (trượt).
+- **Tính năng đồ họa**:
+  - Hiển thị tên người chơi, thời gian còn lại, số lượt còn lại.
+  - Hình ảnh kết thúc: Thắng (`Congratulation! You win!.png`), Thua (`You lost.png`, `Times out!.png`).
+- **Tính năng tương tác**:
+  - Nhập tên người chơi bằng bàn phím.
+  - Giao diện nút "Play", "Play Again", "Quit" với hiệu ứng hover và click.
 
-3. Cách chơi
+---
 
-🎯 Mục tiêu
+## 🕹️ Cách chơi
 
-Tìm và bắn trúng toàn bộ các thuyền địch ẩn trên một bảng 10x10 trong số lượng lượt giới hạn và thời gian quy định.
+### 🎯 Mục tiêu
+Bắn trúng và đánh chìm tất cả tàu địch trên bảng 10x10 trong **39 lượt chơi** hoặc **90 giây**.
 
-🕹️ Cách chơi
+### 📌 Hướng dẫn
 
-Sau khi khởi chạy màn hình chờ sẽ hiện lên.
-Việc bạn cần làm là nhập tên và nhấn nút "Play" để bắt đầu.
+- Khởi động game → Nhập tên → Nhấn nút **Play**.
+- Click chuột trái vào ô trên bảng để bắn:
+  - 🔴 **Màu đỏ (X)**: Trúng tàu
+  - 🔵 **Màu xanh dương (O)**: Trượt
 
-![Screenshot 2025-04-18 140152](https://github.com/user-attachments/assets/b11fa6f5-aa91-4c85-bfc3-8efee1abbd40)
+- Khi chiến thắng, hết lượt hoặc hết giờ, tất cả vị trí tàu sẽ được hiển thị.
+- Sau đó, bạn có thể chọn **chơi lại** hoặc **thoát** game.
 
-Mỗi lượt chơi, bạn click chuột trái vào một ô trên bảng.
-Nếu ô đó có thuyền, nó sẽ chuyển sang màu đỏ (X) – bạn đã bắn trúng!
+### 🔊 Âm thanh (SDL2_mixer)
+Nhạc nền xuyên suốt trận đấu
 
-![Screenshot 2025-04-18 140352](https://github.com/user-attachments/assets/fbbe9498-3746-49d4-bec1-cca0c3c2269b)
+Âm thanh cho từng sự kiện:
 
+hit.wav: Bắn trúng
 
-Nếu ô đó trống, nó sẽ chuyển sang màu xanh (O) – bạn đã bắn trượt.
+miss.wav: Bắn trượt
 
-![Screenshot 2025-04-18 140332](https://github.com/user-attachments/assets/ae34fb46-2249-41b1-9abc-84aa72e7b839)
+win.wav: Thắng
 
-Sau khi chiến thắng, hết lượt chơi hoặc hết thời gian chơi - bảng vị trí thực của thuyền sẽ hiện lên.
+lose.wav, timeout.wav: Thua
 
-![Screenshot 2025-04-18 140439](https://github.com/user-attachments/assets/1eb5a066-cde0-4ab4-aa3a-f41f83340891)
+### 🖼️ Đồ họa với SDL2
+loadTexture(): Tải ảnh PNG làm nền và các phần tử.
 
- Game kết thúc khi:
+renderBoard(): Hiển thị bảng với màu sắc trực quan.
 
-Bạn bắn trúng hết toàn bộ thuyền → Chiến thắng!
+renderText(): Hiển thị chữ với font Arial.
 
-Hết số lượt chơi hoặc hết thời gian → Thất bại!
+Màn hình chờ 
 
-Cuối cùng sẽ hiển thị màn hình chờ để bạn có thể chọn chơi lại hoặc thoát trò chơi.
+![Screenshot 2025-04-18 140152](https://github.com/user-attachments/assets/5a03fe9f-2c33-4f1a-b408-fd56eab76da4)
 
-![Screenshot 2025-04-18 140456](https://github.com/user-attachments/assets/505c5983-d3ad-4b27-8494-da256dd55d74)
+Khi bắn trượt 
 
-⏱️ Quy tắc
+![Screenshot 2025-04-18 140332](https://github.com/user-attachments/assets/bc71e61b-bcfc-4583-8d66-1535ffb9cb87)
 
-Bạn có tối đa 39 lượt chơi.
+Khi bắn trúng 
 
-Tổng thời gian để hoàn thành game là 90 giây.
+![Screenshot 2025-04-18 140352](https://github.com/user-attachments/assets/11767945-76f4-4610-bd41-ca17a8019b30)
 
-Mỗi thuyền có chiều dài ngẫu nhiên từ 2 đến 3 ô và được đặt ngẫu nhiên trên bảng.
+Màn hình hiển thị vị trí của tàu
 
-✅ Mẹo
+![Screenshot 2025-04-18 140439](https://github.com/user-attachments/assets/524f65b8-e587-4824-bcc7-bddccc383f27)
 
-Quan sát kỹ các vùng nghi ngờ đã có thuyền.
+Màn hình chờ sau khi chơi xong một ván 
 
-Khi bắn trúng 1 ô, hãy thử bắn các ô xung quanh – có thể là thân thuyền kéo dài.
+![Screenshot 2025-04-18 140456](https://github.com/user-attachments/assets/c942aadb-f17a-4cc7-8466-a5623c369f1c)
 
-4. Về source code game:
+Hình ảnh tàu
 
-📂 Cấu trúc source code:
+![tàu 2](https://github.com/user-attachments/assets/dde317dc-2f0e-42f7-9dd0-52ee429b585b)
 
-🎮 Gameplay & Logic
-BOARD_SIZE, NUM_SHIPS, MAX_ATTEMPTS, TIME_LIMIT: Khai báo các thông số cơ bản như kích thước bảng, số tàu, giới hạn lượt chơi và thời gian.
 
-Struct Ship: Đại diện cho một con tàu với vị trí, độ dài, và hướng đặt (ngang/dọc).
+### ⏱️ Quy tắc
 
-vector<vector<char>> board: Bảng trạng thái lưu vị trí các ô (~, S, X, O).
+- Tối đa **39 lượt chơi**
+- Tối đa **90 giây**
+- Mỗi tàu có độ dài ngẫu nhiên từ **2 đến 3 ô**
+- Tàu được đặt ngẫu nhiên, không đè lên nhau
 
-placeShips() & placeShip(): Tạo vị trí tàu ngẫu nhiên và đặt vào bảng nếu không trùng lặp.
+### ✅ Mẹo chơi
 
-isHit(): Kiểm tra người chơi bắn có trúng tàu không.
+- Hãy để ý các khu vực nghi ngờ.
+- Khi trúng một ô, thử bắn các ô xung quanh – có thể là thân tàu!
 
-revealShips(): Vị trí đồ họa của tàu.
-
-isValidPlacement(): Vị trí hợp lệ để có thể đặt thuyền ngang hoặc dọc mà không bị trùng lặp.
-
-🖼️ Đồ họa (SDL2_image, SDL2_ttf, SDL2_mixer)
-loadTexture(): Hàm hỗ trợ tải ảnh từ file .png để hiển thị lên renderer.
-
-renderBoard() và Result(): Hàm vẽ bảng chơi lên màn hình, với mã màu cho từng trạng thái:
-
-+ Đỏ (X) = Trúng thuyền
-
-+ Xanh biển (O) = Trượt
-
-+ Xanh lá (S) = Vị trí thuyền
-
-+ Xám = Ô trống
-
-renderText(): Hàm khởi tạo chữ hiện trên màn hình chơi với font chữ arial.
-
-Mix_OpenAudio(): Thêm hiệu ứng âm thanh vào các event trong game:
-
-+ music_background: Nhạc nền chạy xuyên suốt trò chơi.
-
-+ win_sound: Âm thanh chiến thắng khi người chơi đánh chìm mọi con tàu.
-
-+ lose_sound: Âm thanh thua cuộc khi người chơi hết lượt bắn hoặc hết thời gian.
-
-+ hit và miss: Âm thanh khi người chơi bắn trúng hoặc trượt tàu trên bảng.
-
-🕹️ Xử lý sự kiện (SDL_Event)
-
-+ SDL_MOUSEBUTTONDOWN: Nhận vị trí người chơi click, chuyển đổi từ pixel sang tọa độ bảng và xử lý theo trạng thái ô.
-
-+ SDL_QUIT: Đóng game khi người dùng tắt cửa sổ.
-
-+ SDL_MOUSEBUTTONUP, SDL_MOUSEBUTTONDOWN: Nhận tín hiệu khi người chơi ấn nút Play, Play Again, Quit.
-
-⏱️ Quản lý thời gian & lượt chơi
-Sử dụng chrono để đo thời gian thực từ khi game bắt đầu.
-
-Nếu vượt quá TIME_LIMIT (90s) hoặc MAX_ATTEMPTS (36 lượt), game kết thúc.
-
-Game kết thúc khi người chơi trúng đủ số ô thuyền.
-
-🖼️ Ảnh nền & kết quả
-Tải các ảnh:
-
-+ "board.png" làm nền bảng chơi
-
-![board](https://github.com/user-attachments/assets/a48b35de-c6db-4906-a7c4-cd7143d65694)
-
-+ "Congratulation! You win!.png" khi thắng
-
-![Congratulation! You win!](https://github.com/user-attachments/assets/69062d68-23ca-44fc-97b0-4f288e81a27d)
-
-+ "You lost.png" khi thua do hết lượt
-
-![You lost](https://github.com/user-attachments/assets/53e3df56-62de-4eb4-b449-fe3fb972795e)
-
-+ "Times out!.png" khi thua do hết thời gian
-
-![Times out!](https://github.com/user-attachments/assets/c6215e2e-925d-44d2-a05d-d46ebb0c2a5d)
-
-+ "Tàu 2" hiển thị khi người chơi đánh chìm tàu
-
-![tàu 2](https://github.com/user-attachments/assets/98d9f501-ba9b-4b10-a242-5a471f84b9b8)
-
-🧪 Tệp liên quan:
-
-+ graphics/: chứa các ảnh PNG
-
-+ src/: chứa file code C++
-
-+ assets/: ảnh nền, hình kết thúc
-
-✅ Điểm nổi bật:
-- Logic đơn giản, dễ hiểu – phù hợp cho người học SDL2 hoặc game 2D cơ bản.
-
-- Có hệ thống kiểm tra thắng/thua, thời gian, lượt bắn.
-
-- Giao diện trực quan bằng SDL2 – đủ sinh động cho một mini game.
-
-- Tương tác dễ dàng qua bàn phím và chuột.
