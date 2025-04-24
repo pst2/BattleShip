@@ -2,6 +2,8 @@
 
 Demo game: https://youtube.com/shorts/g43dpwzMXWQ?feature=share
 
+Giới thiệu game: https://youtu.be/G2_uGwHpS6w
+
 ## 🎮 Giới thiệu
 
 **BattleShip** là một trò chơi hải chiến cổ điển được lập trình bằng **C++** và sử dụng thư viện **SDL2** để hiển thị đồ họa, âm thanh và xử lý sự kiện. Trò chơi mang lại trải nghiệm chiến thuật đơn giản nhưng hấp dẫn – nơi người chơi cần tìm và đánh chìm các tàu địch được giấu ngẫu nhiên trên một bảng 10x10.
