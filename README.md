@@ -2,7 +2,7 @@
 
 Demo game: https://youtube.com/shorts/g43dpwzMXWQ?feature=share
 
-Giới thiệu game: https://youtu.be/G2_uGwHpS6w
+Giới thiệu game: [https://youtu.be/G2_uGwHpS6w](https://youtu.be/HQvaZaJoRcc?feature=shared)
 
 ## 🎮 Giới thiệu
 
