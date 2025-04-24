@@ -77,7 +77,7 @@ Khi bắn trúng
 
 Màn hình hiển thị vị trí của tàu
 
-![Screenshot 2025-04-18 140439](https://github.com/user-attachments/assets/524f65b8-e587-4824-bcc7-bddccc383f27)
+![image](https://github.com/user-attachments/assets/2761411b-e3c9-4f4f-ae40-cd964dec9334)
 
 Màn hình chờ sau khi chơi xong một ván 
 
