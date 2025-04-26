@@ -97,6 +97,8 @@ Hình ảnh tàu
 - Tối đa **90 giây**
 - Mỗi tàu có độ dài ngẫu nhiên từ **2 đến 3 ô**
 - Tàu được đặt ngẫu nhiên, không đè lên nhau
+- Nếu bắn trượt người chơi sẽ bị trừ 1s/ lần
+- Nếu bắn trúng người chơi sẽ được cộng 2s/ lần
 
 ### ✅ Mẹo chơi
 
